@@ -1,0 +1,16 @@
+{
+  "name": "tp-devops-pong",
+  "version": "1.0.0",
+  "description": "API Express qui repond 'pong' - TP DevOps UCAD",
+  "main": "app.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "supertest": "^7.0.0"
+  }
+}
