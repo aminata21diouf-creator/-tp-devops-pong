@@ -1,0 +1,17 @@
+# Dependances Node (se reinstallent avec "npm install")
+node_modules/
+
+# Fichiers generes par le script auto_deploy.sh
+deploy.log
+app.pid
+app.out
+
+# Dossiers de test crees par le script
+mon_app/
+mon_app_test/
+
+# Fichiers d'environnement / secrets
+.env
+
+# Logs npm
+npm-debug.log*
