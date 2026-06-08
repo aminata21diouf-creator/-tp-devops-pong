@@ -1,0 +1,60 @@
+name: CI Pipeline
+
+# Quand le pipeline se declenche :
+on:
+  push:
+    branches: [ main ]        # a chaque push sur main
+  pull_request:
+    branches: [ main ]        # et a chaque pull request vers main
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # JOB 1 : installation des dependances + tests
+  # ---------------------------------------------------------------------------
+  build-and-test:
+    runs-on: ubuntu-latest    # le job tourne sur une machine Linux fournie par GitHub
+
+    steps:
+      - name: Recuperer le code
+        uses: actions/checkout@v4
+
+      - name: Installer Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Installer les dependances
+        run: npm install
+
+      - name: Lancer les tests
+        run: npm test
+
+      - name: Build (si un script build existe)
+        run: npm run build --if-present
+
+  # ---------------------------------------------------------------------------
+  # JOB 2 : construction + push de l'image Docker (BONUS)
+  # Question 3 du TP : ne se lance QUE si le job "build-and-test" a reussi
+  # (grace a "needs") ET uniquement sur un push sur main (pas sur les PR).
+  # ---------------------------------------------------------------------------
+  docker:
+    needs: build-and-test                       # <-- ne demarre que si les tests passent
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Recuperer le code
+        uses: actions/checkout@v4
+
+      - name: Connexion a Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Construire et pousser l'image Docker
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/tp-devops-pong:latest
