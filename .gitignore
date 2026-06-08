@@ -15,3 +15,9 @@ mon_app_test/
 
 # Logs npm
 npm-debug.log*
+
+# Terraform : ne jamais versionner l'etat (peut contenir des secrets)
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
